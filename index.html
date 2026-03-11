@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PercentCalc PWA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        body { transition: background-color 0.3s ease; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans p-6">
+
+    <header class="max-w-md mx-auto mb-8 text-center">
+        <h1 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">PercentCalc</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">Fast results with clear formulas.</p>
+    </header>
+
+    <main class="max-w-md mx-auto space-y-6">
+        
+        <section class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-slate-700 dark:text-slate-300">Find the Percentage</h2>
+            <div class="flex items-center gap-2 mb-4">
+                <span>What is</span>
+                <input type="number" id="p1_percent" placeholder="10" class="w-16 p-2 bg-transparent border-b-2 border-indigo-200 dark:border-indigo-800 focus:border-indigo-500 outline-none text-center">
+                <span>% of</span>
+                <input type="number" id="p1_total" placeholder="200" class="w-20 p-2 bg-transparent border-b-2 border-indigo-200 dark:border-indigo-800 focus:border-indigo-500 outline-none text-center">
+            </div>
+            <div id="p1_result" class="text-indigo-600 dark:text-indigo-400 font-bold text-xl mb-1"></div>
+            <div id="p1_formula" class="text-[10px] text-slate-400 dark:text-slate-500 font-mono italic"></div>
+        </section>
+
+        <section class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+            <h2 class="text-lg font-semibold mb-4 text-slate-700 dark:text-slate-300">Percentage Change</h2>
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <span>From</span>
+                <input type="number" id="p2_old" placeholder="50" class="w-20 p-2 bg-transparent border-b-2 border-indigo-200 dark:border-indigo-800 focus:border-indigo-500 outline-none text-center">
+                <span>to</span>
+                <input type="number" id="p2_new" placeholder="75" class="w-20 p-2 bg-transparent border-b-2 border-indigo-200 dark:border-indigo-800 focus:border-indigo-500 outline-none text-center">
+            </div>
+            <div id="p2_result" class="text-indigo-600 dark:text-indigo-400 font-bold text-xl mb-1"></div>
+            <div id="p2_formula" class="text-[10px] text-slate-400 dark:text-slate-500 font-mono italic"></div>
+        </section>
+
+        <footer class="pt-6 border-t border-slate-200 dark:border-slate-800">
+            <p class="text-[10px] text-slate-400 dark:text-slate-600 text-center uppercase tracking-widest leading-relaxed">
+                Disclaimer: Calculations are for informational purposes only. While we aim for precision, errors may occur. Always verify critical financial or technical data manually.
+            </p>
+        </footer>
+
+    </main>
+
+    <script>
+        const calc = () => {
+            const p = parseFloat(document.getElementById('p1_percent').value);
+            const t = parseFloat(document.getElementById('p1_total').value);
+            if (!isNaN(p) && !isNaN(t)) {
+                const res = (p / 100) * t;
+                document.getElementById('p1_result').innerText = `Result: ${res.toLocaleString()}`;
+                document.getElementById('p1_formula').innerText = `Formula: (${p} / 100) × ${t}`;
+            }
+
+            const oldV = parseFloat(document.getElementById('p2_old').value);
+            const newV = parseFloat(document.getElementById('p2_new').value);
+            if (!isNaN(oldV) && !isNaN(newV) && oldV !== 0) {
+                const diff = ((newV - oldV) / oldV) * 100;
+                const type = diff >= 0 ? "Increase" : "Decrease";
+                document.getElementById('p2_result').innerText = `${Math.abs(diff).toFixed(2)}% ${type}`;
+                document.getElementById('p2_formula').innerText = `Formula: ((${newV} - ${oldV}) / ${oldV}) × 100`;
+            }
+        };
+        document.querySelectorAll('input').forEach(input => input.addEventListener('input', calc));
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+    </script>
+</body>
+</html>
